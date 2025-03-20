@@ -1,0 +1,91 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator erd {
+  provider = "prisma-erd-generator"
+}
+
+model User {
+  id         Int       @id @default(autoincrement())
+  name       String
+  email      String    @unique
+  phone      String    @unique
+  birthDate  DateTime
+  password   String
+  gender     Gender
+  image      String    @default("https://res.cloudinary.com/dj1gixl83/image/upload/f_auto,q_auto/v1/Decor%20app/z3hzx5jfzeecuzx3uokj")
+  cartId     Int?
+  cart       Cart?     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  wishlistId Int?
+  wishlist   Wishlist? @relation(fields: [wishlistId], references: [id], onDelete: Cascade)
+  rates      Rate[]
+}
+
+model Category {
+  id            Int           @id @default(autoincrement())
+  name          String
+  subCategories SubCategory[]
+}
+
+model SubCategory {
+  id         Int       @id @default(autoincrement())
+  name       String
+  categoryId Int
+  category   Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  product    Product[]
+}
+
+model Product {
+  id            Int         @id @default(autoincrement())
+  name          String
+  image         String      @default("https://res.cloudinary.com/dj1gixl83/image/upload/f_auto,q_auto/v1/Decor%20app/ngega9bwqnhvyot6twux")
+  price         Decimal
+  description   String
+  subCategoryId Int
+  subCategory   SubCategory @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
+  cartId        Int?
+  cart          Cart?       @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  wishlistId    Int?
+  wishlist      Wishlist?   @relation(fields: [wishlistId], references: [id], onDelete: Cascade)
+  rates         Rate[]
+}
+
+model Cart {
+  id        Int       @id @default(autoincrement())
+  Product   Product[]
+  createdAt DateTime  @default(now())
+  user      User[]
+}
+
+model Wishlist {
+  id      Int       @id @default(autoincrement())
+  Product Product[]
+  User    User[]
+}
+
+model Rate {
+  id        Int     @id @default(autoincrement())
+  productId Int     @unique
+  Product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userId    Int     @unique
+  User      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rating    Int // Assuming a numeric rating value (1-5, for example)
+  comment   String?
+}
+
+enum Gender {
+  M
+  F
+}
