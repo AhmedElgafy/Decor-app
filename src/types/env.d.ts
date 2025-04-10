@@ -7,11 +7,12 @@ declare global {
       GITHUB_AUTH_TOKEN: string;
       NODE_ENV: "development" | "production";
       PORT?: string;
-      //   PWD: string;
+      DEFAULT_USER_IMAGE: string;
       SECRETE: string;
     }
   }
 }
+export {};
 // declare global {
 //   namespace Express {
 //     interface Request {

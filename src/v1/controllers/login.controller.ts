@@ -1,7 +1,7 @@
 // controllers/auth.controller.ts
 import { Request, Response } from "express";
 import { LoginSchema, LoginType } from "../schemas/user.schema";
-import { loginUserService } from "../services/user.service";
+import UserService from "../services/user.service";
 export default async function loginController(
   req: Request<{}, {}, LoginType>,
   res: Response
@@ -15,7 +15,7 @@ export default async function loginController(
 
   const { email, password } = result.data;
 
-  const loginResult = await loginUserService({ email, password });
+  const loginResult = await UserService.loginUserService({ email, password });
 
   if (!loginResult) {
     res
@@ -26,8 +26,7 @@ export default async function loginController(
 
   const { token } = loginResult;
 
-  res.cookie("token", token);
-  res.setHeader("Authentication", `token ${token}`);
+  res.setHeader("Authorization", `${token}`);
   res.status(201).json({ message: "Login successfully", token });
   return;
 }

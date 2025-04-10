@@ -22,6 +22,12 @@ export default function errorHandler(
       const target: string[] = err?.meta?.target as string[];
       res.status(400).send({ message: `${target[0]} is already exist` });
       return;
+    }
+    if (err.code == "P2025") {
+      interface ErrorI{
+        
+      }
+      res.status(400).send(err.meta);
     } else {
       console.log(err);
       res.status(500).send({ message: "Database error" });

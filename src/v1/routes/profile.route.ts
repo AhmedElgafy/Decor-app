@@ -1,7 +1,14 @@
-import { Request, Response, Router } from "express";
-import profileController from "../controllers/profile.controller";
+import { Router } from "express";
+
+import upload from "../config/multer.config";
+import ProfileController from "../controllers/profile.controller";
 const router: Router = Router();
-export default router.get("/profile", profileController);
-router.patch("/profile", (req: Request, res: Response) => {
-  res.status(200).send("HI");
-});
+router.get("/profile", ProfileController.getProfile);
+router.patch(
+  "/profile",
+  upload.single("image"),
+  ProfileController.updateProfile
+);
+router.delete("/profile", ProfileController.deleteProfile);
+
+export default router;
