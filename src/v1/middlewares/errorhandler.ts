@@ -24,9 +24,7 @@ export default function errorHandler(
       return;
     }
     if (err.code == "P2025") {
-      interface ErrorI{
-        
-      }
+      console.log(err);
       res.status(400).send(err.meta);
     } else {
       console.log(err);

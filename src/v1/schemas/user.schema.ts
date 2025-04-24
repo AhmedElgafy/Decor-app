@@ -1,4 +1,5 @@
 import { z } from "zod";
+import imageSchema from "./schema";
 
 export const UserSchema = z.object({
   name: z.string(),
@@ -8,13 +9,8 @@ export const UserSchema = z.object({
   gender: z.enum(["M", "F"]),
   password: z.string().min(6),
 });
-const ACCEPTED_IMAGE_MIME_TYPES: string[] = [
-  "image/jpeg",
-  "image/jpg",
-  "image/png",
-  "image/webp",
-];
 
+//////////////////////////////////////////////////////////
 export const UpdateUserSchema = z.object({
   name: z.string().nonempty({ message: "Name cannot be empty" }).optional(),
   email: z
@@ -28,15 +24,7 @@ export const UpdateUserSchema = z.object({
     .datetime({ message: "Invalid birth date format" })
     .nonempty({ message: "Birth date cannot be empty" })
     .optional(),
-  image: z
-    .any()
-    .refine(
-      (file: Express.Multer.File) => {
-        return ACCEPTED_IMAGE_MIME_TYPES.includes(file?.mimetype);
-      },
-      { message: "Only .jpg, .jpeg, .png and .webp formats are supported." }
-    )
-    .optional(),
+  image: imageSchema,
   gender: z.enum(["M", "F"]).optional(),
   password: z
     .string()
@@ -51,5 +39,6 @@ export const LoginSchema = z.object({
     .nonempty()
     .min(8, { message: "password should be at lest 8 characters" }),
 });
+
 export type LoginType = z.infer<typeof LoginSchema>;
 export type UserType = z.infer<typeof UserSchema>;
