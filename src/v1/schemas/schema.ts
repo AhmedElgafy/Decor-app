@@ -5,7 +5,7 @@ const ACCEPTED_IMAGE_MIME_TYPES: string[] = [
   "image/png",
   "image/webp",
 ];
-const imageSchema = z
+export const imageSchema = z
   .any()
   .refine(
     (file: Express.Multer.File) => {
@@ -14,4 +14,9 @@ const imageSchema = z
     { message: "Only .jpg, .jpeg, .png and .webp formats are supported." }
   )
   .optional();
-export default imageSchema;
+export const idSchema = z.object({
+  id: z.number({
+    invalid_type_error: "id should be a number",
+    required_error: "id is required",
+  }),
+});

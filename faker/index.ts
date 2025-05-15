@@ -16,9 +16,23 @@ const addFakeUsers = async () => {
     },
   });
 };
+const addFakeProducts = async () => {
+  try {
+    await prisma.product.create({
+      data: {
+        name: faker.commerce.productName(),
+        description: faker.commerce.productDescription(),
+        price: faker.commerce.price(),
+        image: faker.image.url(),
+      },
+    });
+  } catch (error) {
+    console.log("error in creating product");
+  }
+};
 try {
   for (let i = 0; i < 11; i++) {
-    addFakeUsers()
+    addFakeProducts();
   }
 } catch (error) {
   console.log(error);

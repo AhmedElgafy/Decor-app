@@ -2,6 +2,8 @@ import { Product } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
 import ProductService from "../services/product.service";
 import ProductSchema from "../schemas/product.schema";
+import { deleteFile, uploadFile } from "../services/cloudinary.service";
+/////////////////////////////////////////////////////////
 
 async function createProduct(
   req: Request<{}, {}, Product>,
@@ -9,18 +11,14 @@ async function createProduct(
   next: NextFunction
 ) {
   try {
-    ProductSchema.createProductSchema.parse(req.body);
     const product: Product | null = await ProductService.createProduct(
       req.body
     );
-    if (!product) {
-      res.status(404).send({ message: "This product is not found" });
-      return;
-    } else {
-      res.status(201).send(product);
-      return;
-    }
+
+    res.status(201).send(product);
+    return;
   } catch (err) {
+    req.body.image && (await deleteFile(req.body.image));
     next(err);
   }
 }
@@ -31,8 +29,12 @@ async function getProductById(
   next: NextFunction
 ) {
   try {
+    const validId = ProductSchema.createProductSchema
+      .partial()
+      .required({ id: true })
+      .parse({ id: Number(req.params.id) });
     const product: Product | null = await ProductService.getProductById(
-      req.params.id
+      Number(validId.id)
     );
     if (!product) {
       res.status(404).send({ message: "This product is not found" });
@@ -76,8 +78,13 @@ async function deleteProductById(
   next: NextFunction
 ) {
   try {
+    const validId = ProductSchema.createProductSchema
+      .partial()
+      .required({ id: true })
+      .parse({ id: Number(req.params.id) });
+    console.log(validId);
     const product: Product | null = await ProductService.deleteProductById(
-      req.params.id
+      validId.id
     );
     if (!product) {
       res.status(404).send({ message: "This product is not found" });
@@ -91,11 +98,30 @@ async function deleteProductById(
   }
 }
 /////////////////////////////////////////////////////////
-
+async function getAllProducts(
+  req: Request<{ id: number }, {}, {}>,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const product: Product[] | null = await ProductService.getAllProducts();
+    if (!product?.length) {
+      res.status(404).send({ message: "no products found" });
+      return;
+    } else {
+      res.status(200).send(product);
+      return;
+    }
+  } catch (err) {
+    next(err);
+  }
+}
+/////////////////////////////////////////////////////////
 const ProductController = {
   getProductById,
   deleteProductById,
   updateProduct,
   createProduct,
+  getAllProducts,
 };
 export default ProductController;

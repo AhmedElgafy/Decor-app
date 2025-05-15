@@ -1,5 +1,5 @@
 import { z } from "zod";
-import imageSchema from "./schema";
+import { imageSchema } from "./schema";
 
 export const UserSchema = z.object({
   name: z.string(),

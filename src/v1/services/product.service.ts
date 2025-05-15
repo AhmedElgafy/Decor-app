@@ -8,6 +8,10 @@ async function getProductById(id: number): Promise<Product | null> {
   });
   return product;
 }
+async function getAllProducts(): Promise<Product[] | null> {
+  const product: Product[] | null = await prisma.product.findMany({});
+  return product;
+}
 async function deleteProductById(id: number): Promise<Product | null> {
   const product: Product | null = await prisma.product.delete({
     where: { id: id },
@@ -39,5 +43,6 @@ const ProductService = {
   deleteProductById,
   updateProductById,
   createProduct,
+  getAllProducts,
 };
 export default ProductService;

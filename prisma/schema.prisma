@@ -18,71 +18,117 @@ generator erd {
 }
 
 model User {
-  id         Int       @id @default(autoincrement())
-  name       String
-  email      String    @unique
-  phone      String    @unique
-  birthDate  DateTime
-  password   String
-  gender     Gender
-  image      String    @default("https://res.cloudinary.com/dj1gixl83/image/upload/f_auto,q_auto/v1/Decor%20app/z3hzx5jfzeecuzx3uokj")
-  cartId     Int?
-  cart       Cart?     @relation(fields: [cartId], references: [id], onDelete: Cascade)
-  wishlistId Int?
-  wishlist   Wishlist? @relation(fields: [wishlistId], references: [id], onDelete: Cascade)
-  rates      Rate[]
+  id        Int       @id @unique @default(autoincrement())
+  name      String
+  email     String    @unique
+  phone     String    @unique
+  birthDate DateTime
+  password  String
+  gender    Gender
+  image     String    @default("https://res.cloudinary.com/dj1gixl83/image/upload/f_auto,q_auto/v1/Decor%20app/z3hzx5jfzeecuzx3uokj")
+  cart      Cart?
+  wishlist  Wishlist?
+  rates     Rate[]
+  orders    Order[]
 }
 
 model Category {
-  id            Int           @id @default(autoincrement())
+  id            Int           @id @unique @default(autoincrement())
   name          String
   subCategories SubCategory[]
 }
 
 model SubCategory {
-  id         Int       @id @default(autoincrement())
+  id         Int       @id @unique @default(autoincrement())
   name       String
   categoryId Int
   category   Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  product    Product[]
+  products   Product[]
 }
 
 model Product {
-  id            Int         @id @default(autoincrement())
+  id            Int          @id @unique @default(autoincrement())
   name          String
-  image         String      @default("https://res.cloudinary.com/dj1gixl83/image/upload/f_auto,q_auto/v1/Decor%20app/ngega9bwqnhvyot6twux")
+  image         String       @default("https://res.cloudinary.com/dj1gixl83/image/upload/f_auto,q_auto/v1/Decor%20app/ngega9bwqnhvyot6twux")
   price         Decimal
   description   String
-  subCategoryId Int
-  subCategory   SubCategory @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
-  cartId        Int?
-  cart          Cart?       @relation(fields: [cartId], references: [id], onDelete: Cascade)
-  wishlistId    Int?
-  wishlist      Wishlist?   @relation(fields: [wishlistId], references: [id], onDelete: Cascade)
+  subCategoryId Int?
+  inStock       Int          @default(0)
+  subCategory   SubCategory? @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
   rates         Rate[]
+  cartItems     CartItem[]
+  orderItems    OrderItem[]
+  wishlists     Wishlist[]
+
+  WishlistItem WishlistItem[]
 }
 
 model Cart {
-  id        Int       @id @default(autoincrement())
-  Product   Product[]
-  createdAt DateTime  @default(now())
-  user      User[]
+  id        Int        @id @unique @default(autoincrement())
+  createdAt DateTime   @default(now())
+  user      User?      @relation(fields: [userId], references: [id])
+  userId    Int        @unique
+  count     Int
+  total     Decimal
+  cartItems CartItem[]
+}
+
+model CartItem {
+  id        Int     @id @unique @default(autoincrement())
+  productId Int
+  cartId    Int
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  cart      Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  quantity  Int
+
+  @@unique([cartId, productId])
+}
+
+model Order {
+  id         Int         @id @unique @default(autoincrement())
+  createdAt  DateTime    @default(now())
+  userId     Int
+  user       User?       @relation(fields: [userId], references: [id])
+  orderItems OrderItem[]
+}
+
+model OrderItem {
+  id        Int     @id @unique @default(autoincrement())
+  productId Int
+  orderId   Int
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  quantity  Int
+  @@unique([orderId, productId])
 }
 
 model Wishlist {
-  id      Int       @id @default(autoincrement())
-  Product Product[]
-  User    User[]
+  id           Int            @id @unique @default(autoincrement())
+  user         User?          @relation(fields: [userId], references: [id])
+  userId       Int            @unique
+  products     Product[]
+  WishlistItem WishlistItem[]
+}
+
+model WishlistItem {
+  id         Int      @id @unique @default(autoincrement())
+  productId  Int
+  wishlistId Int
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  wishlist   Wishlist @relation(fields: [wishlistId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, wishlistId])
 }
 
 model Rate {
-  id        Int     @id @default(autoincrement())
-  productId Int     @unique
-  Product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-  userId    Int     @unique
-  User      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        Int     @id @unique @default(autoincrement())
+  productId Int
+  userId    Int
   rating    Int // Assuming a numeric rating value (1-5, for example)
   comment   String?
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([productId, userId])
 }
 
 enum Gender {

@@ -33,7 +33,11 @@ export async function uploadFile(
 export async function deleteFile(url: string) {
   const arr = decodeURI(url).split("/");
   const id = [arr.at(-2), "/", arr.at(-1)?.split(".")[0]].join("");
-  console.log(id);
+  console.log("Deleted successfully", id);
+  if (url == process.env.DEFAULT_USER_IMAGE) {
+    console.log("this is default image");
+    return;
+  }
   try {
     const res = await cloudinary.uploader.destroy(id, function (result) {
       console.log(result);
