@@ -11,26 +11,14 @@ import userRoute from "./src/v1/routes/user.route";
 import notFoundMW from "./src/v1/middlewares/notFound";
 import productRoute from "./src/v1/routes/product.route";
 import cors from "cors";
+import requestLogger from "./src/v1/middlewares/logger";
 dotenv.config();
 const app = express();
 const port = process.env.PORT;
+app.use(requestLogger)
 app.use(express.json());
-
 app.use(bodyParser.urlencoded());
 setupSwagger(app);
-app.post("/", (req: Request, res: Response) => {
-  // res.setHeader("redirect",'http://localhost:3001/')
-  res.cookie("token", "abc123", {
-    secure: false, // Only for development!
-    httpOnly: true,
-    domain: ".app.com",
-    sameSite: "lax", // Or "none" if you need cross-site
-    path: "/",
-  });
-  res.status(200).json({ mes: "dgasg" });
-  return;
-  // res.send("Hello World!");
-});
 app.get("/", (req: Request, res: Response) => {
   res.status(200).send("<h1>hello from backend</h1>");
   return;
