@@ -8,6 +8,7 @@ import {
   WishlistProduct,
   WishlistProducts,
 } from "../../types/prisma";
+import { paginationVars } from "../utils/createPagination";
 
 async function getUser(req: Request, res: Response) {
   const user = await UserService.getUserById(Number(req.params.id));
@@ -20,7 +21,7 @@ async function getUser(req: Request, res: Response) {
   }
 }
 async function getUsers(req: Request, res: Response) {
-  const user = await UserService.getUsers();
+  const user = await UserService.getUsers(req);
   if (!user) {
     res.status(404).send({ message: "This user is not exist" });
     return;

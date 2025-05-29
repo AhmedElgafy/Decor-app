@@ -26,6 +26,14 @@ export default function errorHandler(
     if (err.code == "P2025") {
       console.log(err);
       res.status(400).send(err.meta);
+    }
+    if (err.code == "P2003") {
+      res.status(400).send({
+        message:
+          err.meta?.modelName +
+          " foreign key constraint failed. Please check related data.",
+      });
+      return;
     } else {
       console.log(err);
       res.status(500).send({ message: "Database error" });

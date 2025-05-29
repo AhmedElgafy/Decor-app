@@ -35,32 +35,34 @@ model User {
 model Category {
   id            Int           @id @unique @default(autoincrement())
   name          String
+  image         String        @default("https://res.cloudinary.com/dj1gixl83/image/upload/f_auto,q_auto/v1/Decor%20app/ngega9bwqnhvyot6twux")
+  createdAt     DateTime      @default(now())
   subCategories SubCategory[]
 }
 
 model SubCategory {
   id         Int       @id @unique @default(autoincrement())
   name       String
+  image      String    @default("https://res.cloudinary.com/dj1gixl83/image/upload/f_auto,q_auto/v1/Decor%20app/ngega9bwqnhvyot6twux")
   categoryId Int
   category   Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   products   Product[]
 }
 
 model Product {
-  id            Int          @id @unique @default(autoincrement())
+  id            Int            @id @unique @default(autoincrement())
   name          String
-  image         String       @default("https://res.cloudinary.com/dj1gixl83/image/upload/f_auto,q_auto/v1/Decor%20app/ngega9bwqnhvyot6twux")
+  image         String         @default("https://res.cloudinary.com/dj1gixl83/image/upload/f_auto,q_auto/v1/Decor%20app/ngega9bwqnhvyot6twux")
   price         Decimal
   description   String
   subCategoryId Int?
-  inStock       Int          @default(0)
-  subCategory   SubCategory? @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
+  inStock       Int            @default(0)
+  subCategory   SubCategory?   @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
   rates         Rate[]
   cartItems     CartItem[]
   orderItems    OrderItem[]
   wishlists     Wishlist[]
-
-  WishlistItem WishlistItem[]
+  WishlistItem  WishlistItem[]
 }
 
 model Cart {
@@ -99,6 +101,7 @@ model OrderItem {
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
   order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
   quantity  Int
+
   @@unique([orderId, productId])
 }
 
@@ -128,6 +131,7 @@ model Rate {
   comment   String?
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
   user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@unique([productId, userId])
 }
 

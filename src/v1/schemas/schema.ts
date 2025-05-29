@@ -20,3 +20,4 @@ export const idSchema = z.object({
     required_error: "id is required",
   }),
 });
+// imageSchema.p

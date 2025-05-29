@@ -5,7 +5,7 @@ enum Gender {
   F,
 }
 const addFakeUsers = async () => {
-  await prisma.user.create({
+  const user = await prisma.user.create({
     data: {
       birthDate: faker.date.between({ from: "2000-01-01", to: Date.now() }),
       email: faker.internet.email(),
@@ -14,6 +14,12 @@ const addFakeUsers = async () => {
       password: faker.internet.password(),
       phone: faker.phone.number(),
     },
+  });
+  const cart = await prisma.cart.create({
+    data: { userId: user.id, total: 0, count: 0 },
+  });
+  const wishlist = await prisma.wishlist.create({
+    data: { userId: user.id },
   });
 };
 const addFakeProducts = async () => {
@@ -32,7 +38,7 @@ const addFakeProducts = async () => {
 };
 try {
   for (let i = 0; i < 11; i++) {
-    addFakeProducts();
+    addFakeUsers();
   }
 } catch (error) {
   console.log(error);

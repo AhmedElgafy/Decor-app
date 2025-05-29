@@ -7,10 +7,12 @@ import { createUserToken } from "../utils/auth";
 import { deleteFile, uploadFile } from "./cloudinary.service";
 import {
   OrderProduct,
+  Paginated,
   RateProducts,
   WishlistProduct,
   WishlistProducts,
 } from "../../types/prisma";
+import createPagination, { paginationVars } from "../utils/createPagination";
 
 async function loginUserService(data: LoginType) {
   const user = await prisma.user.findFirst({
@@ -46,8 +48,23 @@ async function getUserById(id: number | undefined) {
     omit: { password: true },
   });
 }
-async function getUsers() {
-  return await prisma.user.findMany({ omit: { password: true } });
+async function getUsers(req: Request): Promise<Paginated<Omit<User,"password">> | null> {
+  const { pageSize, page, baseUrl, skip } = paginationVars(req);
+  const [users, count] = await Promise.all([
+    await prisma.user.findMany({
+      skip: skip,
+      take: pageSize,
+      omit: { password: true },
+    }),
+    prisma.user.count(),
+  ]);
+  return createPagination<Omit<User,"password">>({
+    items: users,
+    page: page,
+    count: count,
+    baseUrl: baseUrl,
+    pageSize: pageSize,
+  });
 }
 async function deleteUser(id: number) {
   const user: User = await prisma.user.delete({ where: { id: id } });

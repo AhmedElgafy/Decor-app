@@ -7,16 +7,13 @@ export default function isIdExistMW(
   next: NextFunction
 ) {
   try {
-    console.log(req.params);
     const idSchema = z.object({
       id: z.number({
         required_error: "id is required",
         invalid_type_error: "id should be a number",
       }),
     });
-    req.params.id
-      ? idSchema.parse({ id: Number(req.params.id) })
-      : idSchema.parse({});
+    idSchema.parse({ id: Number(req.params.id) });
     next();
   } catch (err) {
     next(err);
