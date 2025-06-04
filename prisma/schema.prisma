@@ -68,7 +68,7 @@ model Product {
 model Cart {
   id        Int        @id @unique @default(autoincrement())
   createdAt DateTime   @default(now())
-  user      User?      @relation(fields: [userId], references: [id])
+  user      User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    Int        @unique
   count     Int
   total     Decimal
@@ -90,7 +90,7 @@ model Order {
   id         Int         @id @unique @default(autoincrement())
   createdAt  DateTime    @default(now())
   userId     Int
-  user       User?       @relation(fields: [userId], references: [id])
+  user       User?       @relation(fields: [userId], references: [id], onDelete: Cascade)
   orderItems OrderItem[]
 }
 
@@ -107,7 +107,7 @@ model OrderItem {
 
 model Wishlist {
   id           Int            @id @unique @default(autoincrement())
-  user         User?          @relation(fields: [userId], references: [id])
+  user         User?          @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId       Int            @unique
   products     Product[]
   WishlistItem WishlistItem[]

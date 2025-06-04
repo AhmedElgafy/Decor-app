@@ -13,33 +13,33 @@ import {
   WishlistProducts,
 } from "../../types/prisma";
 import createPagination, { paginationVars } from "../utils/createPagination";
+import bcrypt from "bcrypt";
 
 async function loginUserService(data: LoginType) {
   const user = await prisma.user.findFirst({
     where: {
-      AND: [{ email: data.email }, { password: data.password }],
-    },
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      phone: true,
-      birthDate: true,
-      gender: true,
-      image: true,
+      email: data.email,
     },
   });
+  const isMatch = await bcrypt.compare(data.password, user?.password || "");
 
-  if (!user) {
+  if (!user || !isMatch) {
     return null;
   }
-
-  const token = createUserToken(user);
-
-  return { user, token };
+  const { password, ...userWithoutPassword } = user; // Omit password from user object
+  const token = createUserToken(userWithoutPassword);
+  return { userWithoutPassword, token };
 }
 async function createUserService(user: UserType) {
-  const userNew = await prisma.user.create({ data: user });
+  const userNew = await prisma.$transaction(async (tex) => {
+    const tranUser = await tex.user.create({ data: user });
+    await tex.cart.create({
+      data: { userId: tranUser.id, count: 0, total: 0 },
+    });
+    await tex.wishlist.create({ data: { userId: tranUser.id } });
+    return tranUser;
+  });
+  // const userNew = await prisma.user.create({ data: user });
   return userNew;
 }
 async function getUserById(id: number | undefined) {
@@ -48,7 +48,9 @@ async function getUserById(id: number | undefined) {
     omit: { password: true },
   });
 }
-async function getUsers(req: Request): Promise<Paginated<Omit<User,"password">> | null> {
+async function getUsers(
+  req: Request
+): Promise<Paginated<Omit<User, "password">> | null> {
   const { pageSize, page, baseUrl, skip } = paginationVars(req);
   const [users, count] = await Promise.all([
     await prisma.user.findMany({
@@ -58,7 +60,7 @@ async function getUsers(req: Request): Promise<Paginated<Omit<User,"password">> 
     }),
     prisma.user.count(),
   ]);
-  return createPagination<Omit<User,"password">>({
+  return createPagination<Omit<User, "password">>({
     items: users,
     page: page,
     count: count,

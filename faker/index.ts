@@ -1,3 +1,4 @@
+import bcrypt from "bcrypt";
 import prisma from "../prisma/queries";
 import { faker } from "@faker-js/faker";
 enum Gender {
@@ -11,7 +12,7 @@ const addFakeUsers = async () => {
       email: faker.internet.email(),
       gender: faker.helpers.arrayElement(["M", "F"]),
       name: faker.person.fullName(),
-      password: faker.internet.password(),
+      password: await bcrypt.hash("password", 10),
       phone: faker.phone.number(),
     },
   });

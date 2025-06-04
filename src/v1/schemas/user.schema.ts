@@ -21,7 +21,7 @@ export const UpdateUserSchema = z.object({
   phone: z.string().nonempty({ message: "Phone cannot be empty" }).optional(),
   birthDate: z
     .string()
-    .datetime({ message: "Invalid birth date format" })
+    .datetime({ message: "Birth date must be a valid date" })
     .nonempty({ message: "Birth date cannot be empty" })
     .optional(),
   image: imageSchema,

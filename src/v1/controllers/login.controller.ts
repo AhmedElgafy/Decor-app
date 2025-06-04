@@ -16,6 +16,7 @@ export default async function loginController(
   const { email, password } = result.data;
 
   const loginResult = await UserService.loginUserService({ email, password });
+  
 
   if (!loginResult) {
     res

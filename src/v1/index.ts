@@ -9,6 +9,7 @@ import subcategoryRoute from "./routes/subcategory.route";
 import userRoute from "./routes/user.route";
 import rateRoute from "./routes/rate.route";
 import wishlistRoute from "./routes/wishlist.route";
+import orderRoute from "./routes/order.route";
 import authMW from "./middlewares/verifyToken";
 const app: Router = Router();
 app.use(loginRoute);
@@ -22,4 +23,5 @@ app.use(categoryRoute);
 app.use(cartRoute);
 app.use(wishlistRoute);
 app.use(rateRoute);
+app.use(orderRoute)
 export default app;
