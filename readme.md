@@ -109,7 +109,7 @@ createdAt DateTime @default(now())
 - **Cascade Deletes**: Deleting a user will also delete their cart, orders, wishlist, and ratings.
 
 ---
-![App Screenshot](./prisma/ERD.svg)
+![App Screenshot](./prisma/diagram-export-6-10-2025-12_15_13-PM.svg)
 ---
 
 ## License
