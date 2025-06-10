@@ -2,7 +2,7 @@
 
 This is the backend server for the **Decor App**, an e-commerce platform for home decor products.  
 It is built with **Node.js**, **Express**, **Prisma ORM**, and uses a **SQLite** database by default.
-![App Screenshot](./prisma/ERD.svg)
+
 ---
 
 ## Features
@@ -108,6 +108,8 @@ createdAt DateTime @default(now())
 - **SQLite**: Good for development and testing. For production, consider PostgreSQL or MySQL for better concurrency and row-level locking.
 - **Cascade Deletes**: Deleting a user will also delete their cart, orders, wishlist, and ratings.
 
+---
+![App Screenshot](./prisma/ERD.svg)
 ---
 
 ## License
