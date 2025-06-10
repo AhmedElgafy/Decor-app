@@ -2,7 +2,7 @@
 
 This is the backend server for the **Decor App**, an e-commerce platform for home decor products.  
 It is built with **Node.js**, **Express**, **Prisma ORM**, and uses a **SQLite** database by default.
-
+![App Screenshot](./prisma/ERD.svg)
 ---
 
 ## Features
