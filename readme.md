@@ -107,9 +107,15 @@ createdAt DateTime @default(now())
 - **Transactions**: Order creation and stock updates are wrapped in transactions for data consistency.
 - **SQLite**: Good for development and testing. For production, consider PostgreSQL or MySQL for better concurrency and row-level locking.
 - **Cascade Deletes**: Deleting a user will also delete their cart, orders, wishlist, and ratings.
+- **ERD**: ERD [Link][ERD]
+- **Postman**: Postman [Link][postman]
 
+[ERD]: https://app.eraser.io/workspace/Fgq1ELazLatXrThcczUL?origin=share
+[postman]: https://documenter.getpostman.com/view/27400850/2sB2qfAKMX
 ---
+
 ![App Screenshot](./prisma/diagram-export-6-10-2025-12_15_13-PM.svg)
+
 ---
 
 ## License
