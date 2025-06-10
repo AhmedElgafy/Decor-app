@@ -7,6 +7,7 @@ export default function isIdExistMW(
   next: NextFunction
 ) {
   try {
+    console.log("isIdExistMW called with params:", req.params);
     const idSchema = z.object({
       id: z.number({
         required_error: "id is required",

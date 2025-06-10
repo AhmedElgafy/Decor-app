@@ -41,7 +41,8 @@ export default function errorHandler(
     }
   } else {
     console.error(err.stack);
-    res.status(500).json({ error: "Internal Server Error" });
+    const error = err as Error;
+    res.status(500).json({ error: err.message || "Internal Server Error" });
     return;
   }
 }

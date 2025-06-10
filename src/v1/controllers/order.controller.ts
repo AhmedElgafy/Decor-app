@@ -1,7 +1,26 @@
 import { Request, Response, NextFunction } from "express";
 import { Order, OrderItem } from "@prisma/client";
 import OrderService from "../services/order.service";
-
+// crate a new order by cart ID
+async function createOrderByCartId(
+  req: Request<{ id: number }, {}, Order>,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const cartId = Number(req.params.id);
+    const products = await OrderService.createOrderByCartId(cartId);
+    if (products) {
+      res.status(201).send(products);
+      return;
+    } else {
+      res.status(404).send({ message: "Cart not found" });
+      return;
+    }
+  } catch (err) {
+    next(err);
+  }
+}
 // Get all orders by user ID
 async function getOrdersByUserId(req: Request, res: Response) {
   const id = Number(req.user?.id);
@@ -113,6 +132,7 @@ const OrderController = {
   updateOrder,
   deleteProductOrder,
   addProductToOrder,
+  createOrderByCartId,
 };
 
 export default OrderController;

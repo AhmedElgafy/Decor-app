@@ -26,6 +26,7 @@ model User {
   password  String
   gender    Gender
   image     String    @default("https://res.cloudinary.com/dj1gixl83/image/upload/f_auto,q_auto/v1/Decor%20app/z3hzx5jfzeecuzx3uokj")
+  createdAt DateTime  @default(now()) // Added
   cart      Cart?
   wishlist  Wishlist?
   rates     Rate[]
@@ -44,6 +45,7 @@ model SubCategory {
   id         Int       @id @unique @default(autoincrement())
   name       String
   image      String    @default("https://res.cloudinary.com/dj1gixl83/image/upload/f_auto,q_auto/v1/Decor%20app/ngega9bwqnhvyot6twux")
+  createdAt  DateTime  @default(now()) // Added
   categoryId Int
   category   Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   products   Product[]
@@ -55,6 +57,7 @@ model Product {
   image         String         @default("https://res.cloudinary.com/dj1gixl83/image/upload/f_auto,q_auto/v1/Decor%20app/ngega9bwqnhvyot6twux")
   price         Decimal
   description   String
+  createdAt     DateTime       @default(now()) // Added
   subCategoryId Int?
   inStock       Int            @default(0)
   subCategory   SubCategory?   @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
@@ -76,11 +79,12 @@ model Cart {
 }
 
 model CartItem {
-  id        Int     @id @unique @default(autoincrement())
+  id        Int      @id @unique @default(autoincrement())
   productId Int
   cartId    Int
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-  cart      Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now()) // Added
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
   quantity  Int
 
   @@unique([cartId, productId])
@@ -95,11 +99,12 @@ model Order {
 }
 
 model OrderItem {
-  id        Int     @id @unique @default(autoincrement())
+  id        Int      @id @unique @default(autoincrement())
   productId Int
   orderId   Int
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now()) // Added
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
   quantity  Int
 
   @@unique([orderId, productId])
@@ -107,6 +112,7 @@ model OrderItem {
 
 model Wishlist {
   id           Int            @id @unique @default(autoincrement())
+  createdAt    DateTime       @default(now()) // Added
   user         User?          @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId       Int            @unique
   products     Product[]
@@ -117,6 +123,7 @@ model WishlistItem {
   id         Int      @id @unique @default(autoincrement())
   productId  Int
   wishlistId Int
+  createdAt  DateTime @default(now()) // Added
   product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   wishlist   Wishlist @relation(fields: [wishlistId], references: [id], onDelete: Cascade)
 
@@ -124,13 +131,14 @@ model WishlistItem {
 }
 
 model Rate {
-  id        Int     @id @unique @default(autoincrement())
+  id        Int      @id @unique @default(autoincrement())
   productId Int
   userId    Int
   rating    Int // Assuming a numeric rating value (1-5, for example)
   comment   String?
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now()) // Added
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([productId, userId])
 }
