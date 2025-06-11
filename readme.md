@@ -73,6 +73,15 @@ createdAt DateTime @default(now())
 2. **Set up the database**
 
    - Edit `.env` if you want to use a different database.
+     ```env
+      DATABASE_URL=your_database_url
+      SECRETE=JWT_secret
+      PORT=3002
+      DEFAULT_USER_IMAGE=project_image_url
+      CLOUDINARY_SECRET=cloudinary_secret
+      CLOUDINARY_KEY=cloudinary_key
+      CLOUDINARY_NAME=cloudinary_name
+      ```
    - Run Prisma migrations:
      ```sh
      npx prisma migrate dev --name init
